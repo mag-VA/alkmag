@@ -47,3 +47,28 @@ Działania bez prognozy finansowej nadal obciążają całkowity wynik. Źródł
 ## Sprawdzone ścieżki
 
 Testy jednostkowe: obliczanie ROI, zerowy budżet, e-commerce i B2B, malejące efekty, blokady i limity, konflikty, korekta przypisania, subskrypcja i eksport CSV. W przeglądarce Chromium zweryfikowano edycję kwot, automatyczny podział, nową pozycję, scenariusze, rynki, parametry B2B, pobranie CSV, trwałość zapisu po odświeżeniu i układ mobilny. Dodatkowy test integracyjny API sprawdza izolację dwóch firm, role właściciela/edytora/czytelnika, odrzucenie niepoprawnych danych, jednorazowość zaproszeń, logowanie i unieważnianie sesji. W Chromium zweryfikowano również rejestrację, zapis serwerowy po odświeżeniu, generowanie zaproszenia, wylogowanie i raport PDF.
+
+## Publikacja przez GitHub Pages
+
+Repozytorium zawiera workflow `.github/workflows/pages.yml`. Po każdym pushu na `main` GitHub Actions instaluje zależności, wykonuje testy i publikuje statyczną wersję Planly.
+
+Jednorazowa konfiguracja w GitHub:
+
+1. Otwórz **Settings → Pages** w repozytorium `mag-VA/alkmag`.
+2. W sekcji **Build and deployment → Source** wybierz **GitHub Actions**.
+3. W **Actions → Publish Planly to GitHub Pages → Run workflow** uruchom publikację (lub wyślij kolejny commit do `main`).
+4. Po pomyślnym wdrożeniu adres będzie widoczny w **Settings → Pages** i przy jobie `deploy`. Standardowy adres projektu to `https://mag-va.github.io/alkmag/`.
+
+GitHub Pages publikuje wyłącznie statyczne pliki. W tej wersji działa edytor, prognozy, scenariusze, zapis w przeglądarce i eksport CSV/PDF. Panel kont wyjaśnia lokalny sposób zapisu; aplikacja nie wysyła żądań do nieistniejącego backendu. Konta, role i firmowy zapis serwerowy działają po uruchomieniu pełnej wersji poleceniem `npm run dev` / `npm start` na serwerze Node.js.
+
+Lokalna weryfikacja wersji Pages:
+
+```sh
+npm run build:pages
+npm run preview:pages -- --port 4173
+# Otwórz ścieżkę /alkmag/ na serwerze podglądu.
+```
+
+`.env.github-pages` ustawia ścieżkę zasobów `/alkmag/`, więc skrypty, style, fonty i favicon działają na stronie projektu. Przy publikacji pod własną domeną ustaw `VITE_BASE_PATH=/` w kroku budowania. Zwykłe `npm run build` nadal używa ścieżki `/` i pełnej obsługi API.
+
+Pliki mają kodowanie **UTF-8**, określone również w `.editorconfig` i `<meta charset="UTF-8">`. Eksport CSV zawiera znacznik BOM UTF-8, dzięki czemu Excel prawidłowo odczytuje polskie znaki. Fonty i ikony są dołączone do kompilacji, bez zależności od zewnętrznego serwera fontów. Dostępność Pages dla repozytorium prywatnego zależy od planu GitHub i ustawień organizacji.

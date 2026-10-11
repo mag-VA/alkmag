@@ -92,3 +92,10 @@ test("CSV preserves metadata and escapes names", () => {
   assert.ok(s.includes('"Nakładanie odbiorców %";"10"'));
   assert.ok(s.includes("Nieoszacowany"));
 });
+test("CSV preserves Polish characters with a UTF-8 BOM", () => {
+  const p = clone();
+  p.name = "Żółć — budżet Łódź";
+  const bytes = Buffer.from(csv(p), "utf8");
+  assert.deepEqual([...bytes.subarray(0, 3)], [0xef, 0xbb, 0xbf]);
+  assert.ok(bytes.subarray(3).toString("utf8").includes(p.name));
+});

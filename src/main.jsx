@@ -66,7 +66,7 @@ import "@fontsource/manrope/latin-600.css";
 import "@fontsource/manrope/latin-700.css";
 import "@fontsource/manrope/latin-800.css";
 import "./styles.css";
-import { api } from "./api.js";
+import { api, serverEnabled } from "./api.js";
 const nav = [
   ["dashboard", "Przegląd planu", LayoutDashboard],
   ["budget", "Budżet i kanały", Wallet],
@@ -133,6 +133,7 @@ function App() {
     setToast(message);
   };
   useEffect(() => {
+    if (!serverEnabled) return;
     let cancelled = false;
     api("/auth/me")
       .then(async ({ user }) => {
@@ -751,7 +752,7 @@ function App() {
                     <span className="new-tag">NOWE</span>
                   </div>
                   <h2>
-                    Wykorzystaj potencjał{" "}<br />
+                    Wykorzystaj potencjał <br />
                     obecnych klientów.
                   </h2>
                   <p>
@@ -2187,6 +2188,28 @@ function AccountPanel({ session, onAuth, onLogout }) {
       setBusy(false);
     }
   };
+  if (!serverEnabled)
+    return (
+      <div className="account-panel">
+        <div className="local-status">
+          <ShieldCheck size={35} />
+          <h3>Twoje plany, w tej przeglądarce</h3>
+          <p>
+            Wersja GitHub Pages umożliwia planowanie budżetu, porównywanie
+            scenariuszy i eksport raportów. Wszystkie zmiany są zapisywane
+            lokalnie na tym urządzeniu.
+          </p>
+        </div>
+        <div className="inline-note">
+          <Info size={18} />
+          <span>
+            Logowanie i współpraca zespołowa są dostępne w wersji z serwerem.
+            Eksportuj CSV, aby zachować kopię. Wyczyszczenie danych przeglądarki
+            usuwa lokalne plany.
+          </span>
+        </div>
+      </div>
+    );
   return session ? (
     <div className="account-panel">
       <div className="account-summary">
