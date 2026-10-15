@@ -1,4 +1,4 @@
-name: Publish Planly to GitHub Pages
+name: Publish Planly and KompensIQ to GitHub Pages
 
 on:
   push:
@@ -29,6 +29,17 @@ jobs:
         run: npm test
       - name: Build UTF-8 website
         run: npm run build:pages
+      - name: Install KompensIQ dependencies
+        working-directory: kompensiq
+        run: npm ci --no-audit --no-fund
+      - name: Test KompensIQ calculations
+        working-directory: kompensiq
+        run: npm test
+      - name: Build KompensIQ demo
+        working-directory: kompensiq
+        run: npm run build:pages
+      - name: Include KompensIQ without replacing Planly
+        run: mkdir -p dist/kompensiq && cp -R kompensiq/dist/. dist/kompensiq/
       - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
